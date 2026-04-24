@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1,width=device-width">
+
+<link rel="stylesheet" href="leaflet.css">
+<link rel="stylesheet" href="qgis2web.css">
+<link rel="stylesheet" href="fontawesome-all.min.css">
+
+<style>
+
+/* RESET */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+/* HEADER */
+#header {
+    width: 100%;
+    text-align: center;
+    background: #f4f4f4;
+    padding: 15px 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+#header h1 {
+    margin: 0;
+    color: #2c6bb2;
+}
+
+#header h2 {
+    margin: 5px 0;
+    color: #2c6bb2;
+}
+
+/* MAP */
+#map {
+    width: 100%;
+    height: calc(100vh - 110px);
+}
+
+</style>
+
+<title>UB6 Map</title>
+</head>
+
+<body>
+
+<div id="header">
+    <h1>Boundary Plan</h1>
+    <h2>UB6 MAP</h2>
+</div>
+
+<div id="map"></div>
+
+<script src="leaflet.js"></script>
+<script src="Autolinker.min.js"></script>
+
+<script src="UB6Boundary_1.js"></script>
+<script src="UB6Centroids_2.js"></script>
+
+<script>
+
+var map = L.map('map').fitBounds([
+    [51.5252,-0.3803],
+    [51.5617,-0.2921]
+]);
+
+/* BASEMAP */
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+/* AUTOLINKER */
+var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+
+/* -------------------------
+   BOUNDARY POPUP
+------------------------- */
+function pop_UB6Boundary_1(feature, layer) {
+    var popupContent = '<table>' +
+        '<tr><td><strong>ID</strong></td></tr>' +
+        '<tr><td>' + (feature.properties.id ?? '') + '</td></tr>' +
+        '</table>';
+
+    layer.bindPopup(popupContent);
+}
+
+/* STYLE */
+function style_UB6Boundary_1_0() {
+    return {
+        color: '#333',
+        weight: 1,
+        fillColor: '#beb297',
+        fillOpacity: 0.7
+    }
+}
+
+/* LAYER */
+var layer_UB6Boundary_1 = L.geoJson(json_UB6Boundary_1, {
+    onEachFeature: pop_UB6Boundary_1,
+    style: style_UB6Boundary_1_0
+}).addTo(map);
+
+
+/* -------------------------
+   CENTROIDS POPUP
+------------------------- */
+function pop_UB6Centroids_2(feature, layer) {
+    var popupContent = '<table>' +
+        '<tr><td><strong>ID</strong></td></tr>' +
+        '<tr><td>' + (feature.properties.id ?? '') + '</td></tr>' +
+        '</table>';
+
+    layer.bindPopup(popupContent);
+}
+
+/* STYLE */
+function style_UB6Centroids_2_0() {
+    return {
+        radius: 5,
+        color: '#000',
+        weight: 1,
+        fillColor: '#e5b636',
+        fillOpacity: 1
+    }
+}
+
+/* LAYER */
+var layer_UB6Centroids_2 = L.geoJson(json_UB6Centroids_2, {
+    onEachFeature: pop_UB6Centroids_2,
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, style_UB6Centroids_2_0());
+    }
+}).addTo(map);
+
+</script>
+
+</body>
+</html>
